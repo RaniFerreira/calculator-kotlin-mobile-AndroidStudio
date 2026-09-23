@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -39,25 +40,29 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CalculadoraTheme(darkTheme = true, dynamicColor = false) {
+            CalculadoraTheme(darkTheme = false, dynamicColor = false) {
                 CalculatorScreen()
             }
         }
     }
 }
 
-private val BackgroundColor = Color(0xFF121212)
-private val DigitBg = Color(0xFF2C2C2E)
-private val DigitText = Color.White
-private val OperatorBg = Color(0xFFFF9F0A)
+// Purple & white theme, with a warm gold accent on "=" for contrast.
+private val BackgroundColor = Color(0xFFFFFFFF)
+private val DisplayBigText = Color(0xFF2E0854)
+private val DisplaySmallText = Color(0xFF9B8AC4)
+private val DigitBg = Color(0xFFF1EAFB)
+private val DigitText = Color(0xFF2E0854)
+private val DigitBorder = Color(0xFFE0D0F5)
+private val OperatorBg = Color(0xFF7C3AED)
 private val OperatorText = Color.White
-private val FunctionBg = Color(0xFF3A3A3C)
-private val FunctionText = Color(0xFF64D2FF)
-private val UtilityBg = Color(0xFFA5A5A5)
-private val UtilityText = Color.Black
-private val EqualsBg = Color(0xFF0A84FF)
-private val EqualsText = Color.White
-private val ErrorColor = Color(0xFFFF453A)
+private val FunctionBg = Color(0xFFC9A9FF)
+private val FunctionText = Color(0xFF2E0854)
+private val UtilityBg = Color(0xFFD9CCF0)
+private val UtilityText = Color(0xFF2E0854)
+private val EqualsBg = Color(0xFFFFB300)
+private val EqualsText = Color(0xFF2E0854)
+private val ErrorColor = Color(0xFFD32F2F)
 
 @Composable
 fun CalculatorScreen() {
@@ -94,7 +99,7 @@ private fun DisplaySection(state: CalculatorState, modifier: Modifier = Modifier
     ) {
         Text(
             text = state.smallDisplay,
-            color = Color(0xFFAAAAAA),
+            color = DisplaySmallText,
             fontSize = 22.sp,
             maxLines = 1,
             overflow = TextOverflow.Clip,
@@ -105,7 +110,7 @@ private fun DisplaySection(state: CalculatorState, modifier: Modifier = Modifier
         )
         Text(
             text = state.bigDisplay,
-            color = if (state.isError) ErrorColor else Color.White,
+            color = if (state.isError) ErrorColor else DisplayBigText,
             fontSize = if (state.bigDisplay.length > 9) 40.sp else 56.sp,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
@@ -132,32 +137,32 @@ private fun ScientificColumn(state: CalculatorState, modifier: Modifier = Modifi
 private fun ButtonGrid(state: CalculatorState, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         GridRow(Modifier.weight(1f)) {
-            CalcButton("C", Modifier.weight(1f).fillMaxHeight(), UtilityBg, UtilityText) { state.clear() }
-            CalcButton("⌫", Modifier.weight(1f).fillMaxHeight(), UtilityBg, UtilityText) { state.onBackspace() }
+            CalcButton("C", Modifier.weight(1f).fillMaxHeight(), UtilityBg, UtilityText, DigitBorder) { state.clear() }
+            CalcButton("⌫", Modifier.weight(1f).fillMaxHeight(), UtilityBg, UtilityText, DigitBorder) { state.onBackspace() }
             CalcButton("^", Modifier.weight(1f).fillMaxHeight(), OperatorBg, OperatorText) { state.onOperator('^') }
             CalcButton("÷", Modifier.weight(1f).fillMaxHeight(), OperatorBg, OperatorText) { state.onOperator('÷') }
         }
         GridRow(Modifier.weight(1f)) {
-            CalcButton("7", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("7") }
-            CalcButton("8", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("8") }
-            CalcButton("9", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("9") }
+            CalcButton("7", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("7") }
+            CalcButton("8", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("8") }
+            CalcButton("9", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("9") }
             CalcButton("×", Modifier.weight(1f).fillMaxHeight(), OperatorBg, OperatorText) { state.onOperator('×') }
         }
         GridRow(Modifier.weight(1f)) {
-            CalcButton("4", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("4") }
-            CalcButton("5", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("5") }
-            CalcButton("6", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("6") }
+            CalcButton("4", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("4") }
+            CalcButton("5", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("5") }
+            CalcButton("6", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("6") }
             CalcButton("-", Modifier.weight(1f).fillMaxHeight(), OperatorBg, OperatorText) { state.onOperator('-') }
         }
         GridRow(Modifier.weight(1f)) {
-            CalcButton("1", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("1") }
-            CalcButton("2", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("2") }
-            CalcButton("3", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("3") }
+            CalcButton("1", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("1") }
+            CalcButton("2", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("2") }
+            CalcButton("3", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("3") }
             CalcButton("+", Modifier.weight(1f).fillMaxHeight(), OperatorBg, OperatorText) { state.onOperator('+') }
         }
         GridRow(Modifier.weight(1f)) {
-            CalcButton("0", Modifier.weight(2f).fillMaxHeight(), DigitBg, DigitText) { state.onDigit("0") }
-            CalcButton(".", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText) { state.onDecimal() }
+            CalcButton("0", Modifier.weight(2f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDigit("0") }
+            CalcButton(".", Modifier.weight(1f).fillMaxHeight(), DigitBg, DigitText, DigitBorder) { state.onDecimal() }
             CalcButton("=", Modifier.weight(1f).fillMaxHeight(), EqualsBg, EqualsText) { state.onEquals() }
         }
     }
@@ -178,12 +183,15 @@ private fun CalcButton(
     modifier: Modifier = Modifier,
     backgroundColor: Color,
     contentColor: Color,
+    borderColor: Color? = null,
     onClick: () -> Unit
 ) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
-        color = backgroundColor
+        color = backgroundColor,
+        shadowElevation = 2.dp,
+        border = borderColor?.let { BorderStroke(1.dp, it) }
     ) {
         Box(
             modifier = Modifier
@@ -204,7 +212,7 @@ private fun CalcButton(
 @Preview(showBackground = true)
 @Composable
 fun CalculatorPreview() {
-    CalculadoraTheme(darkTheme = true, dynamicColor = false) {
+    CalculadoraTheme(darkTheme = false, dynamicColor = false) {
         CalculatorScreen()
     }
 }
@@ -212,7 +220,7 @@ fun CalculatorPreview() {
 @Preview(showBackground = true, widthDp = 720, heightDp = 360)
 @Composable
 fun CalculatorPreviewLandscape() {
-    CalculadoraTheme(darkTheme = true, dynamicColor = false) {
+    CalculadoraTheme(darkTheme = false, dynamicColor = false) {
         CalculatorScreen()
     }
 }
